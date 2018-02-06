@@ -43,7 +43,10 @@
     "organic-nucleus": "^1.0.x",
     "organic-plasma": "^1.1.x",
     "organic-plasma-feedback": "^1.0.0",
-    "angelabilities-exec": "0.1.0"
+    "angelabilities-exec": "0.1.0",
+    "organic-emailrender": "^0.1.2",
+    "organic-emailsender": "^0.3.2",
+    "email-templates": "^2.0.1"
   },
   "private": true,
   "devDependencies": {
@@ -58,13 +61,15 @@
     "mocha": "^3.0.2",
     "rimraf": "^2.5.2",
     "request": "^2.69.0",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "organic-emailpreview": "^0.1.1"
   },
   "engines": {
     "node": "0.10.x | >= 4.2.3"
   },
   "stack-upgrades": {
     "core": "1.0.0",
-    "mocha-chai": "1.0.0"
+    "mocha-chai": "1.0.0",
+    "emails-support": "0.1.0"
   }
 }

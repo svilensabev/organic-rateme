@@ -21,6 +21,22 @@
       "source": "organic-express-static",
       "reactOn": "ExpressServer",
       "mount": "@client.public"
+    },
+    "organic-emailrender": {
+      "source": "organic-emailrender",
+      "root": "server/emails",
+      "templateEngine": "server/initializers/email-templates",
+      "cache": true,
+      "reactOn": "sendEmail",
+      "emitEmail": "deliverEmail"
+    },
+    "organic-emailsender": {
+      "source": "organic-emailsender",
+      "email": {
+        "transport": "devnull"
+      },
+      "reactOn": "deliverEmail",
+      "from": "noreply@stem-skeleton"
     }
   },
   "membrane": {
