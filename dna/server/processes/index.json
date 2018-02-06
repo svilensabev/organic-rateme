@@ -3,7 +3,8 @@
     "organic-api-routes": {
       "source": "organic-express-routes",
       "reactOn": [
-        "ExpressServer"
+        "ExpressServer",
+        "ExpressSessions"
       ],
       "pattern": "/**/*.js",
       "path": "server/http/routes",
@@ -37,6 +38,13 @@
       },
       "reactOn": "deliverEmail",
       "from": "noreply@stem-skeleton"
+    },
+    "organic-express-sessions": {
+      "source": "organic-express-mongo-sessions",
+      "reactOn": "ExpressServer",
+      "emitReady": "ExpressSessions",
+      "cookie_secret": "@secrets.cookie",
+      "db": "stem-sessions"
     }
   },
   "membrane": {
@@ -70,7 +78,8 @@
       ],
       "interceptors": [
         "server/http/params"
-      ]
+      ],
+      "cookie_secret": "@secrets.cookie"
     },
     "organic-mongoose": {
       "source": "organic-mongoose",

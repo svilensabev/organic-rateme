@@ -48,7 +48,8 @@
     "organic-emailsender": "^0.3.2",
     "email-templates": "^2.0.1",
     "mongoose": "^4.8.0",
-    "organic-mongoose": "0.1.1"
+    "organic-mongoose": "0.1.1",
+    "organic-express-mongo-sessions": "0.0.4"
   },
   "private": true,
   "devDependencies": {
@@ -73,6 +74,7 @@
     "core": "1.0.0",
     "mocha-chai": "1.0.0",
     "emails-support": "0.1.0",
-    "mongoose": "0.1.0"
+    "mongoose": "0.1.0",
+    "mongo-sessions": "0.1.0"
   }
 }
