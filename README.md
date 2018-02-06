@@ -1,9 +1,9 @@
-# {{{name}}}
+# organic-rateme
 
 ## setup
 
-    $ git clone {{{repo}}}
-    $ cd ./{{{name}}}
+    $ git clone https://github.com/svilensabev/organic-rateme.git
+    $ cd ./organic-rateme
     $ npm install
     $ npm install organic-angel -g
 
