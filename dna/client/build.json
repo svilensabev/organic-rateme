@@ -11,7 +11,8 @@
     }
   ],
   "js": {
-    "src": "client/apps/**/*.bundle.js"
+    "src": "client/apps/**/*.bundle.js",
+    "webpack": "dna/client/webpack.config.js"
   },
   "css": {
     "src": "client/apps/**/*.bundle.css"
