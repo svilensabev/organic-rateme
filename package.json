@@ -51,7 +51,7 @@
     "organic-nucleus": "^1.0.x",
     "organic-plasma": "^1.1.x",
     "organic-plasma-feedback": "^1.0.0",
-    "organic-stem-devtools": "^0.2.5",
+    "organic-stem-devtools": "^0.2.2",
     "organic-stem-skeleton": "github:outbounder/organic-stem-skeleton"
   },
   "private": true,
@@ -79,6 +79,7 @@
     "emails-support": "0.1.0",
     "mongoose": "0.1.0",
     "mongo-sessions": "0.1.0",
-    "ejs-pages": "0.1.0"
+    "ejs-pages": "0.1.0",
+    "devtools": "0.2.2"
   }
 }
