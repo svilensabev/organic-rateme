@@ -90,7 +90,8 @@
     "rimraf": "^2.5.2",
     "request": "^2.69.0",
     "lodash": "^4.17.4",
-    "organic-emailpreview": "^0.1.1"
+    "organic-emailpreview": "^0.1.1",
+    "nodemon": "^1.8.1"
   },
   "engines": {
     "node": "0.10.x | >= 4.2.3"
@@ -107,6 +108,7 @@
     "organic-oval-fu": "0.1.0",
     "devtools-assets": "0.2.2",
     "devtools-less": "0.2.2",
-    "devtools-webpack": "0.2.2"
+    "devtools-webpack": "0.2.2",
+    "devtools-nodemon": "0.2.2"
   }
 }
