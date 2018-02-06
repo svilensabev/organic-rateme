@@ -46,7 +46,9 @@
     "angelabilities-exec": "0.1.0",
     "organic-emailrender": "^0.1.2",
     "organic-emailsender": "^0.3.2",
-    "email-templates": "^2.0.1"
+    "email-templates": "^2.0.1",
+    "mongoose": "^4.8.0",
+    "organic-mongoose": "0.1.1"
   },
   "private": true,
   "devDependencies": {
@@ -70,6 +72,7 @@
   "stack-upgrades": {
     "core": "1.0.0",
     "mocha-chai": "1.0.0",
-    "emails-support": "0.1.0"
+    "emails-support": "0.1.0",
+    "mongoose": "0.1.0"
   }
 }
