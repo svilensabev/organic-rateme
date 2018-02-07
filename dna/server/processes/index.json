@@ -2,10 +2,7 @@
   "plasma": {
     "organic-api-routes": {
       "source": "organic-express-routes",
-      "reactOn": [
-        "ExpressServer",
-        "ExpressSessions"
-      ],
+      "reactOn": "ExpressServer",
       "pattern": "/**/*.js",
       "path": "server/http/routes",
       "helpers": "server/http/helpers",
