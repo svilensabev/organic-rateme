@@ -63,6 +63,12 @@
       "path": "client/pages",
       "emitReady": "StaticPagesReady",
       "exclude": "_layout"
+    },
+    "express-jwt-sessions": {
+      "source": "./server/plasma/express-jwt-sessions.js",
+      "reactOn": "ExpressServer",
+      "jwt_secret": "@secrets.jwt_secret",
+      "cookie_secret": "@secrets.cookie"
     }
   },
   "membrane": {
