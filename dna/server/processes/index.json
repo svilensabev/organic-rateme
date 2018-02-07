@@ -40,13 +40,6 @@
       "reactOn": "deliverEmail",
       "from": "noreply@stem-skeleton"
     },
-    "organic-express-sessions": {
-      "source": "organic-express-mongo-sessions",
-      "reactOn": "ExpressServer",
-      "emitReady": "ExpressSessions",
-      "cookie_secret": "@secrets.cookie",
-      "db": "stem-sessions"
-    },
     "organic-site-routes": {
       "source": "organic-express-routes",
       "reactOn": [
