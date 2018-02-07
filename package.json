@@ -37,6 +37,7 @@
     "es6-promise": "^3.2.1",
     "exports-loader": "^0.6.3",
     "express": "^4.12.2",
+    "express-jwt": "^5.3.0",
     "form2js": "^1.0.0",
     "glob-stream": "^5.2.0",
     "globby": "^5.0.0",
