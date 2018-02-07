@@ -20,6 +20,7 @@ var variables = test.variables = {
 
 require('./clean-uploads')
 require('./uploads')
+require('./clean-db')
 
 test.initTestEnv = function (done) {
   var loadDna = require('organic-dna-loader')
@@ -37,6 +38,7 @@ test.startServer = function (next) {
     if (err) return next(err)
     var cell = variables.cell = require('../../server/start')()
     var readyChemcals = _.get(test.variables, 'dna.server.processes.index.membrane.organic-express-server.expressSetupDoneOnce', ['ApiRoutesReady'])
+    test.cleanDB(next)
     cell.plasma.on(readyChemcals, function (err) {
       if (err instanceof Error) return next(err)
       next && next()
