@@ -13,6 +13,9 @@ module.exports = function (plasma, dna, helpers) {
       if (params.name) {
         utils.sqlLike(query, 'name', params.name)
       }
+      if (params.email) {
+        utils.sqlLike(query, 'email', params.email)
+      }
       utils.sqlPaging(query, params)
       utils.sqlSort(query, params)
       utils.sqlCount(query, params)
