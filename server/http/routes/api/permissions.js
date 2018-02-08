@@ -1,10 +1,24 @@
 const Permission = require('../../../models/permission')
 const _ = require('underscore')
+const utils = require('../../../helpers/utils')
 
 module.exports = function (plasma, dna, helpers) {
   return {
     'GET': function (req, res, next) {
-      Permission.find({}).then(permissions => {
+      var params = req.query
+
+      // define mongoose query
+      var query = Permission.find({})
+
+      if (params.name) {
+        utils.sqlLike(query, 'name', params.name)
+      }
+      utils.sqlPaging(query, params)
+      utils.sqlSort(query, params)
+      utils.sqlCount(query, params)
+
+      // execute query
+      query.then(permissions => {
         res.status(200)
         res.body = permissions
         next()

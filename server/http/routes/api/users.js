@@ -1,16 +1,29 @@
 const User = require('../../../models/user')
 const Role = require('../../../models/role')
 const _ = require('underscore')
-let log = console.log
+const utils = require('../../../helpers/utils')
 
 module.exports = function (plasma, dna, helpers) {
   return {
     'GET': function (req, res, next) {
-      User.find({}).then(users => {
-        res.status(200)
-        res.body = users
-        next()
-      })
+      var params = req.query
+
+      // define mongoose query
+      var query = User.find({})
+      if (params.name) {
+        utils.sqlLike(query, 'name', params.name)
+      }
+      utils.sqlPaging(query, params)
+      utils.sqlSort(query, params)
+      utils.sqlCount(query, params)
+
+      // execute query
+      query.populate('roles')
+        .then(users => {
+          res.status(200)
+          res.body = users
+          next()
+        })
     },
     'POST': function (req, res, next) {
       var newUser
@@ -35,18 +48,23 @@ module.exports = function (plasma, dna, helpers) {
 
             // modify resource with allowed attributes
             newAttributes = _.pick(req.body, 'name', 'email', 'roles')
-            user = _.extend(user, newAttributes)
+            if (newAttributes.roles.length > 0) {
+              Role.find({'name': {'$in': newAttributes.roles}}).select('_id').then(roles => {
+                newAttributes.roles = roles
 
-            user.save(function (err) {
-              if (!err) {
-                res.status(200)
-                res.body = user
-              } else {
-                res.status(403)
-                res.body = err
-              }
-              next()
-            })
+                user = _.extend(user, newAttributes)
+                user.save(function (err) {
+                  if (!err) {
+                    res.status(200)
+                    res.body = user
+                  } else {
+                    res.status(403)
+                    res.body = err
+                  }
+                  next()
+                })
+              })
+            }
           } else {
             res.body = {message: 'User not found.'}
           }
