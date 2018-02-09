@@ -41,7 +41,7 @@ module.exports = function (plasma, dna, helpers) {
       })
     },
     'PUT': function (req, res, next) {
-      Role.findById(req.query._id, function (err, role) {
+      Role.findById(req.query.id, function (err, role) {
         if (!err) {
           if (role !== null) {
             var newAttributes
@@ -49,7 +49,8 @@ module.exports = function (plasma, dna, helpers) {
             // modify resource with allowed attributes
             newAttributes = _.pick(req.body, 'name', 'permissions')
             if (newAttributes.permissions.length > 0) {
-              Permission.find({'name': {'$in': newAttributes.permissions}}).select('_id').then(permissions => {
+              Permission.find({'name': {'$in': newAttributes.permissions}}).select('_id')
+              .then(permissions => {
                 newAttributes.permissions = permissions
 
                 role = _.extend(role, newAttributes)
@@ -75,7 +76,7 @@ module.exports = function (plasma, dna, helpers) {
       })
     },
     'DELETE': function (req, res, next) {
-      Role.findById(req.query._id, function (err, role) {
+      Role.findById(req.query.id, function (err, role) {
         if (!err) {
           if (role !== null) {
             role.remove()

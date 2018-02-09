@@ -40,7 +40,7 @@ module.exports = function (plasma, dna, helpers) {
       })
     },
     'PUT': function (req, res, next) {
-      Permission.findById(req.query._id, function (err, permission) {
+      Permission.findById(req.query.id, function (err, permission) {
         if (!err) {
           if (permission !== null) {
             var newAttributes
@@ -69,7 +69,7 @@ module.exports = function (plasma, dna, helpers) {
       })
     },
     'DELETE': function (req, res, next) {
-      Permission.findById(req.query._id, function (err, permission) {
+      Permission.findById(req.query.id, function (err, permission) {
         if (!err) {
           if (permission !== null) {
             permission.remove()
