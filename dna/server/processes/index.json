@@ -1,12 +1,19 @@
 {
   "plasma": {
+    "express-jwt-sessions": {
+      "source": "./server/plasma/express-jwt-sessions.js",
+      "reactOn": "ExpressServer",
+      "jwt_secret": "@secrets.jwt_secret",
+      "cookie_secret": "@secrets.cookie"
+    },
     "organic-api-routes": {
       "source": "organic-express-routes",
       "reactOn": "ExpressServer",
       "pattern": "/**/*.js",
       "path": "server/http/routes",
       "helpers": "server/http/helpers",
-      "emitReady": "ApiRoutesReady"
+      "emitReady": "ApiRoutesReady",
+      "jwt_secret": "@secrets.jwt_secret"
     },
     "organic-express-response": {
       "source": "organic-express-response",
@@ -60,12 +67,6 @@
       "path": "client/pages",
       "emitReady": "StaticPagesReady",
       "exclude": "_layout"
-    },
-    "express-jwt-sessions": {
-      "source": "./server/plasma/express-jwt-sessions.js",
-      "reactOn": "ExpressServer",
-      "jwt_secret": "@secrets.jwt_secret",
-      "cookie_secret": "@secrets.cookie"
     }
   },
   "membrane": {

@@ -1,3 +1,5 @@
+var jwt = require('jsonwebtoken')
+
 var utils = global.utils = {}
 
 utils.sqlLike = function (query, field, val) {
@@ -16,6 +18,22 @@ utils.sqlSort = function (query, params) {
 
 utils.sqlCount = function (query, params) {
   return (params.count) ? query.count() : query
+}
+
+/*
+ * sign with default (HMAC SHA256)
+ */
+utils.generateJwtToken = function (params, secret) {
+  var token = jwt.sign(params, secret)
+  return token
+}
+
+/*
+ * verify JWT
+ */
+utils.verifyJwtToken = function (token, secret) {
+  var decoded = jwt.verify(token, secret)
+  return decoded
 }
 
 module.exports = utils

@@ -6,7 +6,7 @@ module.exports = function (plasma, dna) {
 
     var jwt = expressJwt({
       secret: dna.jwt_secret,
-      credentialsRequired: false,
+      credentialsRequired: true,
       getToken: function fromHeaderOrQuerystring (req) {
         if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
           return req.headers.authorization.split(' ')[1]

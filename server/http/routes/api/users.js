@@ -6,7 +6,16 @@ const utils = require('../../../helpers/utils')
 module.exports = function (plasma, dna, helpers) {
   return {
     'GET': function (req, res, next) {
+      var loggedUser
       var params = req.query
+
+      if (params.token) {
+        loggedUser = utils.verifyJwtToken(params.token, dna.jwt_secret)
+        if (!loggedUser.userId) {
+          res.status(403)
+          res.body = loggedUser
+        }
+      }
 
       // define mongoose query
       var query = User.find({})
