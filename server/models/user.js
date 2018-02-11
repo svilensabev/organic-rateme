@@ -28,7 +28,8 @@ schema.statics.search = function search (params) {
   dbUtils.sqlLike(query, 'name', params.name)
   dbUtils.sqlLike(query, 'email', params.email)
 
-  // sets paging, sort and count parameters
+  // sets date filters, paging, sort and count parameters
+  dbUtils.sqlDates(query, 'createdAt', params)
   dbUtils.sqlPaging(query, params)
   dbUtils.sqlSort(query, params)
   dbUtils.sqlCount(query, params)
