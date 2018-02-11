@@ -14,10 +14,15 @@ schema.statics.search = function search (params) {
   var query = this.model('RateRequest').find()
 
   // filters query by any provided parameter
-  dbUtils.sqlLike(query, 'project', params.project_id)
-  dbUtils.sqlLike(query, 'user', params.user_id)
+  if (params.project_id) {
+    query.find({'project': params.project_id})
+  }
+  if (params.user_id) {
+    query.find({'user': params.user_id})
+  }
 
-  // sets paging, sort and count parameters
+  // sets date filters, paging, sort and count parameters
+  dbUtils.sqlDates(query, 'createdAt', params)
   dbUtils.sqlPaging(query, params)
   dbUtils.sqlSort(query, params)
   dbUtils.sqlCount(query, params)

@@ -18,4 +18,14 @@ dbUtils.sqlCount = function (query, params) {
   return (params.count) ? query.count() : query
 }
 
+dbUtils.sqlDates = function (query, field, params) {
+  if (params.before) {
+    query.find({field: {'$lte': params.before}})
+  }
+  if (params.after) {
+    query.find({field: {'$gte': params.after}})
+  }
+  return query
+}
+
 module.exports = dbUtils

@@ -21,7 +21,8 @@ schema.statics.search = function search (params) {
     query.find({'user': params.user_id})
   }
 
-  // sets paging, sort and count parameters
+  // sets date filters, paging, sort and count parameters
+  dbUtils.sqlDates(query, 'assignedAt', params)
   dbUtils.sqlPaging(query, params)
   dbUtils.sqlSort(query, params)
   dbUtils.sqlCount(query, params)

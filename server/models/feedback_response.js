@@ -13,11 +13,14 @@ schema.statics.search = function search (params) {
   var query = this.model('FeedbackResponse').find()
 
   // filters query by any provided parameter
-  dbUtils.sqlLike(query, 'rateRequest', params.rate_id)
-  dbUtils.sqlLike(query, 'state', params.state)
+  if (params.rate_id) {
+    query.find({'rateRequest': params.rate_id})
+  }
+  query.find({'state': {'$in': params.state}})
   dbUtils.sqlLike(query, 'feedback', params.feedback)
 
-  // sets paging, sort and count parameters
+  // sets date filters, paging, sort and count parameters
+  dbUtils.sqlDates(query, 'createdAt', params)
   dbUtils.sqlPaging(query, params)
   dbUtils.sqlSort(query, params)
   dbUtils.sqlCount(query, params)
