@@ -16,7 +16,7 @@ module.exports = function (plasma, dna, helpers) {
           loggedUser = decoded
           if (loggedUser.userId) {
             // execute query
-            return User.search(params).exec()
+            return User.search(params)
           } else {
             throw new Error('User not found for provided token.')
           }
