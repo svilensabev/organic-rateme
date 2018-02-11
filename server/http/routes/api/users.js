@@ -1,105 +1,122 @@
 const User = require('../../../models/user')
 const Role = require('../../../models/role')
 const _ = require('underscore')
-const utils = require('../../../helpers/utils')
+const jwtUtils = require('../../../helpers/jwt-utils')
 
 module.exports = function (plasma, dna, helpers) {
   return {
     'GET': function (req, res, next) {
-      var loggedUser
       var params = req.query
 
-      if (params.token) {
-        loggedUser = utils.verifyJwtToken(params.token, dna.jwt_secret)
-        if (!loggedUser.userId) {
-          res.status(403)
-          res.body = loggedUser
+      try {
+        if (params.token) {
+          var loggedUser = jwtUtils.verifyJwtToken(params.token, dna.jwt_secret)
+          // check user access
+          if (loggedUser.userId) {
+            // execute query
+            User.search(params)
+
+            // send the response back
+            .then(function (users) {
+              res.body = users
+              next()
+            })
+
+            // catch all errors and call the error handler
+            .catch(function (err) {
+              res.body = {message: err.message, error: err.name}
+              next()
+            })
+          } else {
+            throw new Error('User not found for provided token.')
+          }
+        } else {
+          throw new Error('Token not provided.')
         }
+      } catch (err) {
+        res.body = {message: err.message, error: err.name}
+        next()
       }
-
-      // define mongoose query
-      var query = User.find({})
-      if (params.name) {
-        utils.sqlLike(query, 'name', params.name)
-      }
-      if (params.email) {
-        utils.sqlLike(query, 'email', params.email)
-      }
-      utils.sqlPaging(query, params)
-      utils.sqlSort(query, params)
-      utils.sqlCount(query, params)
-
-      // execute query
-      query.populate('roles')
-        .then(users => {
-          res.status(200)
-          res.body = users
-          next()
-        })
     },
     'POST': function (req, res, next) {
       var newUser
+
       // disallow other fields besides those listed below
-      newUser = new User(_.pick(req.body, 'name', 'email', 'roles'))
-      newUser.save(function (err) {
-        if (!err) {
-          res.status(201)
-          res.body = newUser
-        } else {
-          res.status(403)
-          res.body = err
-        }
+      newUser = new User(_.pick(req.body, 'name', 'email'))
+      newUser.save()
+
+      // send the response back
+      .then(function (user) {
+        res.body = user
+        next()
+      })
+
+      // catch all errors and call the error handler
+      .catch(function (err) {
+        res.body = {message: err.message, error: err.name}
         next()
       })
     },
     'PUT': function (req, res, next) {
-      User.findById(req.query.id, function (err, user) {
-        if (!err) {
-          if (user !== null) {
-            var newAttributes
+      var user
+      var newAttributes
 
-            // modify resource with allowed attributes
-            newAttributes = _.pick(req.body, 'name', 'email', 'roles')
-            if (newAttributes.roles.length > 0) {
-              Role.find({'name': {'$in': newAttributes.roles}}).select('_id')
-              .then(roles => {
-                newAttributes.roles = roles
+      // load the user
+      User.findById(req.query.id).exec()
 
-                user = _.extend(user, newAttributes)
-                user.save(function (err) {
-                  if (!err) {
-                    res.status(200)
-                    res.body = user
-                  } else {
-                    res.status(403)
-                    res.body = err
-                  }
-                  next()
-                })
-              })
-            }
-          } else {
-            res.body = {message: 'User not found.'}
-          }
-        } else {
-          res.status(403)
-          res.body = err
+      // find ids of selected roles
+      .then(function (userFromDb) {
+        user = userFromDb
+        if (user === null) {
+          throw new Error('User not found.')
         }
+        // modify resource with allowed attributes
+        newAttributes = _.pick(req.body, 'name', 'email', 'roles')
+        if (newAttributes.roles !== undefined && newAttributes.roles.length > 0) {
+          return Role.find({'name': {'$in': newAttributes.roles}}).select('_id').exec()
+        } else {
+          return []
+        }
+      })
+
+      // save the user with role ids
+      .then(function (roles) {
+        newAttributes.roles = roles
+        user = _.extend(user, newAttributes)
+        return user.save()
+      })
+
+      // send the response back
+      .then(function (user) {
+        res.body = user
+        next()
+      })
+      // catch all errors and call the error handler
+      .catch(function (err) {
+        res.body = {message: err.message, error: err.name}
+        next()
       })
     },
     'DELETE': function (req, res, next) {
-      User.findById(req.query.id, function (err, user) {
-        if (!err) {
-          if (user !== null) {
-            user.remove()
-            res.body = {message: 'User has been deleted.'}
-          } else {
-            res.body = {message: 'User not found.'}
-          }
+      User.findById(req.query.id).exec()
+
+      .then(function (user) {
+        if (user !== null) {
+          return user.remove()
         } else {
-          res.status(403)
-          res.body = err
+          throw new Error('User not found.')
         }
+      })
+
+      // send the response back
+      .then(function (user) {
+        res.body = {message: 'User has been deleted.'}
+        next()
+      })
+
+      // catch all errors and call the error handler
+      .catch(function (err) {
+        res.body = {message: err.message, error: err.name}
         next()
       })
     }

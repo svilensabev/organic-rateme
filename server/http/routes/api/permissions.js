@@ -1,86 +1,94 @@
 const Permission = require('../../../models/permission')
 const _ = require('underscore')
-const utils = require('../../../helpers/utils')
 
 module.exports = function (plasma, dna, helpers) {
   return {
     'GET': function (req, res, next) {
       var params = req.query
 
-      // define mongoose query
-      var query = Permission.find({})
+      Permission.search(params)
 
-      if (params.name) {
-        utils.sqlLike(query, 'name', params.name)
-      }
-      utils.sqlPaging(query, params)
-      utils.sqlSort(query, params)
-      utils.sqlCount(query, params)
+      // send the response back
+      .then(function (permission) {
+        res.body = permission
+        next()
+      })
 
-      // execute query
-      query.then(permissions => {
-        res.status(200)
-        res.body = permissions
+      // catch all errors and call the error handler
+      .catch(function (err) {
+        res.body = {message: err.message, error: err.name}
         next()
       })
     },
     'POST': function (req, res, next) {
       var newPermission
+
       // disallow other fields besides those listed below
       newPermission = new Permission(_.pick(req.body, 'name', 'title'))
-      newPermission.save(function (err) {
-        if (!err) {
-          res.status(201)
-          res.body = newPermission
-        } else {
-          res.status(403)
-          res.body = err
-        }
+      newPermission.save()
+
+      // send the response back
+      .then(function (permission) {
+        res.body = permission
+        next()
+      })
+
+      // catch all errors and call the error handler
+      .catch(function (err) {
+        res.body = {message: err.message, error: err.name}
         next()
       })
     },
     'PUT': function (req, res, next) {
-      Permission.findById(req.query.id, function (err, permission) {
-        if (!err) {
-          if (permission !== null) {
-            var newAttributes
+      var permission
+      var newAttributes
 
-            // modify resource with allowed attributes
-            newAttributes = _.pick(req.body, 'name', 'title')
-            permission = _.extend(permission, newAttributes)
+      // load the user
+      Permission.findById(req.query.id).exec()
 
-            permission.save(function (err) {
-              if (!err) {
-                res.status(200)
-                res.body = permission
-              } else {
-                res.status(403)
-                res.body = err
-              }
-              next()
-            })
-          } else {
-            res.body = {message: 'Permission not found.'}
-          }
-        } else {
-          res.status(403)
-          res.body = err
+      // find ids of selected roles
+      .then(function (permissionFromDb) {
+        permission = permissionFromDb
+        if (permission === null) {
+          throw new Error('Permission not found.')
         }
+        // modify resource with allowed attributes
+        newAttributes = _.pick(req.body, 'name', 'title')
+        permission = _.extend(permission, newAttributes)
+        return permission.save()
+      })
+
+      // send the response back
+      .then(function (permission) {
+        res.body = permission
+        next()
+      })
+      // catch all errors and call the error handler
+      .catch(function (err) {
+        res.body = {message: err.message, error: err.name}
+        next()
       })
     },
     'DELETE': function (req, res, next) {
-      Permission.findById(req.query.id, function (err, permission) {
-        if (!err) {
-          if (permission !== null) {
-            permission.remove()
-            res.body = {message: 'Permission has been deleted.'}
-          } else {
-            res.body = {message: 'Permission not found.'}
-          }
+      Permission.findById(req.query.id).exec()
+
+      .then(function (permission) {
+        if (permission !== null) {
+          return permission.remove()
         } else {
-          res.status(403)
-          res.body = err
+          throw new Error('Permission not found.')
         }
+      })
+
+      // send the response back
+      .then(function (permission) {
+        res.body = {message: 'Permission has been deleted.'}
+        next()
+      })
+
+      // catch all errors and call the error handler
+      .catch(function (err) {
+        res.body = {message: err.message, error: err.name}
         next()
       })
     }

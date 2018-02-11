@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
 var Schema = mongoose.Schema
+const dbUtils = require('../helpers/db-utils')
 
-const schema = {
+const schema = new Schema({
   name: {
     type: String,
     required: true
@@ -18,6 +19,24 @@ const schema = {
   createdAt: { type: Date, default: Date.now },
   rateUpdatedAt: { type: Date },
   rateNotificationAt: { type: Date }
+})
+
+schema.statics.search = function search (params) {
+  var query = this.model('User').find()
+
+  // filters query by any provided parameter
+  dbUtils.sqlLike(query, 'name', params.name)
+  dbUtils.sqlLike(query, 'email', params.email)
+
+  // sets paging, sort and count parameters
+  dbUtils.sqlPaging(query, params)
+  dbUtils.sqlSort(query, params)
+  dbUtils.sqlCount(query, params)
+
+  // executes query
+  query.populate('roles')
+  return query.exec()
 }
+
 const User = mongoose.model('User', schema)
 module.exports = User
