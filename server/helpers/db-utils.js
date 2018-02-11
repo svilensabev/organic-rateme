@@ -20,10 +20,10 @@ dbUtils.sqlCount = function (query, params) {
 
 dbUtils.sqlDates = function (query, field, params) {
   if (params.before) {
-    query.find({field: {'$lte': params.before}})
+    query.find({[field]: {'$lte': params.before}})
   }
   if (params.after) {
-    query.find({field: {'$gte': params.after}})
+    query.find({[field]: {'$gte': params.after}})
   }
   return query
 }

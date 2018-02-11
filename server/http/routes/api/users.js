@@ -7,33 +7,35 @@ module.exports = function (plasma, dna, helpers) {
   return {
     'GET': function (req, res, next) {
       var params = req.query
+      var loggedUser
 
-      try {
-        if (params.token) {
-          var loggedUser = jwtUtils.verifyJwtToken(params.token, dna.jwt_secret)
-          // check user access
+      if (params.token) {
+        jwtUtils.asyncVerifyJwtToken(params.token, dna.jwt_secret)
+
+        .then(function (decoded) {
+          loggedUser = decoded
           if (loggedUser.userId) {
             // execute query
-            User.search(params)
-
-            // send the response back
-            .then(function (users) {
-              res.body = users
-              next()
-            })
-
-            // catch all errors and call the error handler
-            .catch(function (err) {
-              res.body = {message: err.message, error: err.name}
-              next()
-            })
+            return User.search(params).exec()
           } else {
             throw new Error('User not found for provided token.')
           }
-        } else {
-          throw new Error('Token not provided.')
-        }
-      } catch (err) {
+        })
+
+        // send the response back
+        .then(function (users) {
+          console.log(loggedUser)
+          res.body = users
+          next()
+        })
+
+        // catch all errors and call the error handler
+        .catch(function (err) {
+          res.body = {message: err.message, error: err.name}
+          next()
+        })
+      } else {
+        var err = new Error('Token not provided.')
         res.body = {message: err.message, error: err.name}
         next()
       }

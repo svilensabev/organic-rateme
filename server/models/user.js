@@ -36,7 +36,7 @@ schema.statics.search = function search (params) {
 
   // executes query
   query.populate('roles')
-  return query.exec()
+  return query
 }
 
 const User = mongoose.model('User', schema)

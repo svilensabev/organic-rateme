@@ -14,9 +14,25 @@ jwtUtils.generateJwtToken = function (params, secret) {
  * verify JWT
  */
 jwtUtils.verifyJwtToken = function (token, secret) {
-  // TODO async error handling
   var decoded = jwt.verify(token, secret)
   return decoded
+}
+
+/*
+ * verify JWT
+ */
+jwtUtils.asyncVerifyJwtToken = function (token, secret) {
+  return new Promise(
+    function (resolve, reject) {
+      jwt.verify(token, secret, function (err, decoded) {
+        if (!err) {
+          resolve(decoded)
+        } else {
+          reject(err)
+        }
+      })
+    }
+  )
 }
 
 module.exports = jwtUtils
