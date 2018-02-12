@@ -6,26 +6,46 @@ const jwtUtils = require('../../../helpers/jwt-utils')
 module.exports = function (plasma, dna, helpers) {
   return {
     'POST': function (req, res, next) {
+      var loggedUser
       // find user by name and email and return JWT token
       User.findOne({
         'name': req.body.name,
         'email': req.body.email
       }).exec()
 
-      // generate token for valid user
+      // get user roles and permissions
       .then(function (user) {
-        if (user !== null && user._id !== null) {
-          // define token payload
-          var params = {
-            userId: user._id,
-            roles: user.roles
-          }
-          var token = jwtUtils.generateJwtToken(params, dna.jwt_secret)
-          res.body = token
-          next()
+        loggedUser = user
+        if (loggedUser !== null && loggedUser._id !== null) {
+          return Role.find({'_id': {'$in': loggedUser.roles}}).populate('permissions').exec()
         } else {
           throw new Error('User not found.')
         }
+      })
+
+      // generate token for valid user
+      .then(function (roles) {
+        if (roles !== null && roles.length > 0) {
+          loggedUser.rolesNames = []
+          loggedUser.permissions = []
+          _.each(roles, function (role, i, list) {
+            loggedUser.rolesNames.push(role.name)
+            _.each(role.permissions, function (perm, j, list2) {
+              if (!_.contains(loggedUser.permissions, perm.name)) {
+                loggedUser.permissions.push(perm.name)
+              }
+            })
+          })
+        }
+        // define token payload
+        var params = {
+          userId: loggedUser._id,
+          roles: loggedUser.rolesNames,
+          permissions: loggedUser.permissions
+        }
+        var token = jwtUtils.generateJwtToken(params, dna.jwt_secret)
+        res.body = token
+        next()
       })
 
       // catch all errors and call the error handler

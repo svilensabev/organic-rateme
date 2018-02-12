@@ -5,7 +5,8 @@ const dbUtils = require('../helpers/db-utils')
 const schema = new Schema({
   name: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   permissions: [{
     type: Schema.Types.ObjectId,

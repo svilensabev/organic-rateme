@@ -2,6 +2,7 @@ const User = require('../../../models/user')
 const Role = require('../../../models/role')
 const _ = require('underscore')
 const jwtUtils = require('../../../helpers/jwt-utils')
+var guard = require('express-jwt-permissions')()
 
 module.exports = function (plasma, dna, helpers) {
   return {
@@ -24,7 +25,6 @@ module.exports = function (plasma, dna, helpers) {
 
         // send the response back
         .then(function (users) {
-          console.log(loggedUser)
           res.body = users
           next()
         })
