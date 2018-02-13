@@ -14,6 +14,9 @@ schema.statics.search = function search (params) {
   var query = this.model('ProjectUser').find()
 
   // filters query by any provided parameter
+  if (params.id) {
+    query.find({'_id': params.id})
+  }
   if (params.project_id) {
     query.find({'project': params.project_id})
   }

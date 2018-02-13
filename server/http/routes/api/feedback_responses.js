@@ -1,8 +1,8 @@
-const RateRequest = require('../../../models/rate_request')
+// const RateRequest = require('../../../models/rate_request')
 const FeedbackResponse = require('../../../models/feedback_response')
-const Project = require('../../../models/project')
-const User = require('../../../models/user')
-const ProjectUser = require('../../../models/project_user')
+// const Project = require('../../../models/project')
+// const User = require('../../../models/user')
+// const ProjectUser = require('../../../models/project_user')
 const _ = require('underscore')
 
 module.exports = function (plasma, dna, helpers) {
@@ -20,6 +20,7 @@ module.exports = function (plasma, dna, helpers) {
 
       // catch all errors and call the error handler
       .catch(function (err) {
+        res.status(403)
         res.body = {message: err.message, error: err.name}
         next()
       })
@@ -39,6 +40,7 @@ module.exports = function (plasma, dna, helpers) {
 
       // catch all errors and call the error handler
       .catch(function (err) {
+        res.status(403)
         res.body = {message: err.message, error: err.name}
         next()
       })
@@ -69,6 +71,7 @@ module.exports = function (plasma, dna, helpers) {
       })
       // catch all errors and call the error handler
       .catch(function (err) {
+        res.status(403)
         res.body = {message: err.message, error: err.name}
         next()
       })
@@ -92,6 +95,7 @@ module.exports = function (plasma, dna, helpers) {
 
       // catch all errors and call the error handler
       .catch(function (err) {
+        res.status(403)
         res.body = {message: err.message, error: err.name}
         next()
       })

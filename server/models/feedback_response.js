@@ -13,6 +13,9 @@ schema.statics.search = function search (params) {
   var query = this.model('FeedbackResponse').find()
 
   // filters query by any provided parameter
+  if (params.id) {
+    query.find({'_id': params.id})
+  }
   if (params.rate_id) {
     query.find({'rateRequest': params.rate_id})
   }

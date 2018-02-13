@@ -2,7 +2,7 @@ const User = require('../../../models/user')
 const Role = require('../../../models/role')
 const _ = require('underscore')
 const jwtUtils = require('../../../helpers/jwt-utils')
-var guard = require('express-jwt-permissions')()
+// var guard = require('express-jwt-permissions')()
 
 module.exports = function (plasma, dna, helpers) {
   return {
@@ -31,11 +31,13 @@ module.exports = function (plasma, dna, helpers) {
 
         // catch all errors and call the error handler
         .catch(function (err) {
+          res.status(403)
           res.body = {message: err.message, error: err.name}
           next()
         })
       } else {
         var err = new Error('Token not provided.')
+        res.status(403)
         res.body = {message: err.message, error: err.name}
         next()
       }
@@ -55,6 +57,7 @@ module.exports = function (plasma, dna, helpers) {
 
       // catch all errors and call the error handler
       .catch(function (err) {
+        res.status(403)
         res.body = {message: err.message, error: err.name}
         next()
       })
@@ -95,6 +98,7 @@ module.exports = function (plasma, dna, helpers) {
       })
       // catch all errors and call the error handler
       .catch(function (err) {
+        res.status(403)
         res.body = {message: err.message, error: err.name}
         next()
       })
@@ -118,6 +122,7 @@ module.exports = function (plasma, dna, helpers) {
 
       // catch all errors and call the error handler
       .catch(function (err) {
+        res.status(403)
         res.body = {message: err.message, error: err.name}
         next()
       })

@@ -25,6 +25,12 @@ schema.statics.search = function search (params) {
   var query = this.model('User').find()
 
   // filters query by any provided parameter
+  if (params.id) {
+    query.find({'_id': params.id})
+  }
+  if (params.role_id) {
+    query.find({'roles': params.role_id})
+  }
   dbUtils.sqlLike(query, 'name', params.name)
   dbUtils.sqlLike(query, 'email', params.email)
 

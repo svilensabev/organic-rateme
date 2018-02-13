@@ -17,6 +17,9 @@ schema.statics.search = function search (params) {
   var query = this.model('Permission').find()
 
   // filters query by any provided parameter
+  if (params.id) {
+    query.find({'_id': params.id})
+  }
   dbUtils.sqlLike(query, 'name', params.name)
 
   // sets paging, sort and count parameters

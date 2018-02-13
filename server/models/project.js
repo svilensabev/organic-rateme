@@ -21,7 +21,9 @@ schema.statics.search = function search (params) {
 
   // filters query by any provided parameter
   dbUtils.sqlLike(query, 'name', params.name)
-
+  if (params.id) {
+    query.find({'_id': params.id})
+  }
   if (params.user_id) {
     // TODO how to filter by user_id.
     // users[] store projectUserIds and gets populated from ProjectUser model

@@ -17,6 +17,7 @@ module.exports = function (plasma, dna, helpers) {
 
       // catch all errors and call the error handler
       .catch(function (err) {
+        res.status(403)
         res.body = {message: err.message, error: err.name}
         next()
       })
@@ -36,6 +37,7 @@ module.exports = function (plasma, dna, helpers) {
 
       // catch all errors and call the error handler
       .catch(function (err) {
+        res.status(403)
         res.body = {message: err.message, error: err.name}
         next()
       })
@@ -76,6 +78,7 @@ module.exports = function (plasma, dna, helpers) {
       })
       // catch all errors and call the error handler
       .catch(function (err) {
+        res.status(403)
         res.body = {message: err.message, error: err.name}
         next()
       })
@@ -99,6 +102,7 @@ module.exports = function (plasma, dna, helpers) {
 
       // catch all errors and call the error handler
       .catch(function (err) {
+        res.status(403)
         res.body = {message: err.message, error: err.name}
         next()
       })
