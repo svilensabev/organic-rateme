@@ -6,6 +6,7 @@ process.env.CELL_MODE = process.env.CELL_MODE || '_test'
 var path = require('path')
 var chai = require('chai')
 var _ = require('lodash')
+var chaiJWT = require('chai-jwt')
 
 global.expect = chai.expect
 
@@ -30,6 +31,8 @@ test.initTestEnv = function (done) {
     test.variables.dna = dna
 
     test.cleanUploads(done)
+
+    chai.use(chaiJWT)
   })
 }
 
@@ -38,7 +41,7 @@ test.startServer = function (next) {
     if (err) return next(err)
     var cell = variables.cell = require('../../server/start')()
     var readyChemcals = _.get(test.variables, 'dna.server.processes.index.membrane.organic-express-server.expressSetupDoneOnce', ['ApiRoutesReady'])
-    test.cleanDB(next)
+    // test.cleanDB(next)
     cell.plasma.on(readyChemcals, function (err) {
       if (err instanceof Error) return next(err)
       next && next()
