@@ -1,0 +1,74 @@
+[
+  {
+    "name": "admin",
+    "title": "Administer system"
+  },
+  {
+    "name": "user:read",
+    "title": "View any users"
+  },
+  {
+    "name": "user:create",
+    "title": "Create users"
+  },
+  {
+    "name": "user:update",
+    "title": "Update any users"
+  },
+  {
+    "name": "user:delete",
+    "title": "Delete any users"
+  },
+  {
+    "name": "user:own:read",
+    "title": "View my user"
+  },
+  {
+    "name": "user:own:update",
+    "title": "Update my user"
+  },
+  {
+    "name": "user:own:delete",
+    "title": "Delete my user"
+  },
+  {
+    "name": "project:read",
+    "title": "View any projects"
+  },
+  {
+    "name": "project:create",
+    "title": "Create projects"
+  },
+  {
+    "name": "project:update",
+    "title": "Update any projects"
+  },
+  {
+    "name": "project:delete",
+    "title": "Delete any projects"
+  },
+  {
+    "name": "project:own:read",
+    "title": "View own projects"
+  },
+  {
+    "name": "project:own:update",
+    "title": "Update own projects"
+  },
+  {
+    "name": "project:own:delete",
+    "title": "Delete own projects"
+  },
+  {
+    "name": "rate:create",
+    "title": "Create rate request on my projects"
+  },
+  {
+    "name": "feedback:create",
+    "title": "Provide feedback to all rate requests"
+  },
+  {
+    "name": "feedback:own:create",
+    "title": "Provide feedback to rate request on my projects"
+  }
+]

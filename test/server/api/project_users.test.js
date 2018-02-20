@@ -2,17 +2,19 @@ var request = require('request')
 const User = require('../../../server/models/user')
 const Role = require('../../../server/models/role')
 const Project = require('../../../server/models/project')
+const ProjectUser = require('../../../server/models/project_user')
 var faker = require('faker')
 
-var loggedUser, testProject, createdProject
+var loggedUser, testProject, createdProjectUser
 
-describe('/api/projects', function () {
+describe('/api/project_users', function () {
   this.timeout(0)
 
   before(test.startServer)
   after(test.stopServer)
 
   before(function (next) {
+    console.log('test')
     // Test on random user AND project from database
     User.count()
     .then(function (count) {
@@ -59,6 +61,7 @@ describe('/api/projects', function () {
       expect(body).to.be.signedWith(test.variables.dna.secrets.jwt_secret)
       // attach token to loggedUser
       loggedUser.token = res.body
+      console.log(loggedUser.id)
       console.log(loggedUser.email)
       console.log(loggedUser.roles[0].name)
       next()
@@ -67,17 +70,13 @@ describe('/api/projects', function () {
 
   it('GET filtered list', function (next) {
     var params = {
-      // name: 'project', // filter by project name simular to sql like
-      // author_id: 'ObjectId', // filter by user
+      // project_id: 'ObjectId',
+      // user_id: 'ObjectId',
       offset: 0,
       limit: 10,
-      sort: 'name',
-      order: 'asc',
-      // before: '2018-02-10',
-      // after: '2018-02-10',
     }
     request({
-      uri: test.variables.apiendpoint + '/projects',
+      uri: test.variables.apiendpoint + '/project_users',
       method: 'GET',
       qs: params,
       headers: {Authorization: ' Bearer ' + loggedUser.token},
@@ -92,13 +91,13 @@ describe('/api/projects', function () {
 
   it('POST', function (next) {
     var params = {
-      name: faker.company.companyName(),
-      author: loggedUser._id,
-      users: [],
-      clientFeedback: faker.random.boolean()
+      project: testProject.id,
+      user: loggedUser.id,
+      position: faker.name.jobTitle(),
+      price: faker.finance.amount()
     }
     request({
-      uri: test.variables.apiendpoint + '/projects',
+      uri: test.variables.apiendpoint + '/project_users',
       method: 'POST',
       body: params,
       headers: {Authorization: ' Bearer ' + loggedUser.token},
@@ -107,56 +106,53 @@ describe('/api/projects', function () {
       if (err) return next(err)
       expect(res.statusCode).to.eq(200)
       expect(body).to.be.an('object')
-      expect(body).to.have.property('name')
-      expect(body).to.have.property('author')
-      expect(body).to.have.property('users')
-      expect(body.users).to.be.an('array')
-      expect(body.createdAt).to.exist
-      expect(body.name).to.eq(params.name)
+      expect(body).to.have.property('project')
+      expect(body).to.have.property('user')
+      expect(body).to.have.property('position')
+      expect(body).to.have.property('price')
+      expect(body.assignedAt).to.exist
+      expect(body.project).to.eq(params.project)
       // save this project for additional tests
-      createdProject = res.body
+      createdProjectUser = res.body
+      console.log('createdProjectUser')
+      console.log(createdProjectUser)
       next()
     })
   })
 
   it('PUT', function (next) {
     var params = {
-      name: faker.company.companyName(),
-      author: loggedUser._id,
-      users: [
-        loggedUser.email
-      ],
-      clientFeedback: faker.random.boolean()
+      project: testProject.name,
+      user: loggedUser.email,
+      position: faker.name.jobTitle(),
+      price: faker.finance.amount()
     }
     request({
-      uri: test.variables.apiendpoint + '/projects',
+      uri: test.variables.apiendpoint + '/project_users',
       method: 'PUT',
       body: params,
-      qs: {id: createdProject._id.toString()},
+      qs: {id: createdProjectUser._id.toString()},
       headers: {Authorization: ' Bearer ' + loggedUser.token},
       json: true
     }, function (err, res, body) {
       if (err) return next(err)
       expect(res.statusCode).to.eq(200)
       expect(body).to.be.an('object')
-      expect(body).to.have.property('name')
-      expect(body).to.have.property('author')
-      expect(body).to.have.property('users')
-      expect(body.users).to.be.an('array')
-      expect(body.users).to.have.lengthOf(1)
-      expect(body.createdAt).to.exist
-      expect(body.name).to.eq(params.name)
-      // save this project for additional tests
-      createdProject = res.body
+      expect(body).to.have.property('project')
+      expect(body).to.have.property('user')
+      expect(body).to.have.property('position')
+      expect(body).to.have.property('price')
+      expect(body.assignedAt).to.exist
+      expect(body.project._id.toString()).to.eq(createdProjectUser.project.toString())
       next()
     })
   })
 
   it('GET :id', function (next) {
     request({
-      uri: test.variables.apiendpoint + '/projects',
+      uri: test.variables.apiendpoint + '/project_users',
       method: 'GET',
-      qs: {id: createdProject._id.toString()},
+      qs: {id: createdProjectUser._id.toString()},
       headers: {Authorization: ' Bearer ' + loggedUser.token},
       json: true
     }, function (err, res, body) {
@@ -164,27 +160,24 @@ describe('/api/projects', function () {
       expect(res.statusCode).to.eq(200)
       expect(body).to.be.an('array')
       expect(body).to.have.lengthOf(1)
-      expect(body[0]).to.have.property('name')
-      expect(body[0].name).to.eq(createdProject.name)
+      expect(body[0]).to.have.property('project')
+      expect(body[0]).to.have.property('position')
+      expect(body[0].project._id.toString()).to.eq(createdProjectUser.project.toString())
       next()
     })
   })
 
   it('DELETE', function (next) {
-    // seeded testProject has rate requests and feedbacks,
-    // so we could test gracefull delete on real project
     request({
-      uri: test.variables.apiendpoint + '/projects',
+      uri: test.variables.apiendpoint + '/project_users',
       method: 'DELETE',
-      qs: {id: testProject._id.toString()},
+      qs: {id: createdProjectUser._id.toString()},
       headers: {Authorization: ' Bearer ' + loggedUser.token},
       json: true
     }, function (err, res, body) {
       if (err) return next(err)
-      console.log(testProject.author.id)
-      console.log(loggedUser.id)
-      console.log(res.statusCode)
-      if ((loggedUser.roles[0].name === 'client' && testProject.author.id === loggedUser.id) ||
+      // TODO test
+      if ((loggedUser.roles[0].name === 'client' && createdProjectUser.user === loggedUser.id) ||
           loggedUser.roles[0].name !== 'client') {
         expect(res.statusCode).to.eq(200)
       } else {

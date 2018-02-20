@@ -6,7 +6,8 @@ test.cleanDB = function (done) {
   let dna = {database: test.variables.dna.server.database}
   let plasma = new Plasma()
   plasma.on('Mongoose', function (c) {
-    mongoose.connection.db.dropDatabase(function () {
+    mongoose.connection.db.dropDatabase(function (err) {
+      console.log('dropDatabase')
       test.variables.organelles.mongoose.disconnect(null, done)
     })
   })

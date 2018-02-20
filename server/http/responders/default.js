@@ -10,12 +10,11 @@ module.exports = function (app, dna) {
   })
   // default error handler
   app.use(function (err, req, res, next) {
-    console.error(err)
-    res.status(500)
-    if (dna.views) {
-      res.render('500')
-    } else {
-      res.end()
+    if (err.code === 'permission_denied') {
+      res.status(401).send('Insufficient permissions')
     }
+    res.body = {message: err.message, error: err.name}
+    res.status(403)
+    return res.json(res.body)
   })
 }

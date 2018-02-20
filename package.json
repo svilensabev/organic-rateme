@@ -9,7 +9,8 @@
     "develop": "angel develop",
     "watch": "angel watch",
     "build": "angel build",
-    "test:style": "angel test style"
+    "test:style": "angel test style",
+    "db-seed": "angel db-seed"
   },
   "repository": {
     "type": "git",
@@ -64,7 +65,7 @@
     "organic-express-server": "0.0.2",
     "organic-express-static": "0.0.2",
     "organic-express-staticpages": "0.0.3",
-    "organic-mongoose": "0.1.1",
+    "organic-mongoose": "1.1.0",
     "organic-nucleus": "^1.0.x",
     "organic-oval": "4.1.0",
     "organic-plasma": "^1.1.x",

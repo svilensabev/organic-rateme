@@ -1,17 +1,18 @@
 var request = require('request')
 const User = require('../../../server/models/user')
 const Role = require('../../../server/models/role')
-// const Permission = require('../../../server/models/permission')
+const Permission = require('../../../server/models/permission')
 
-var loggedUser, testRole
+var loggedUser, testPermission
 
-describe('/api/roles', function () {
+describe('/api/permissions', function () {
   this.timeout(0)
 
   before(test.startServer)
   after(test.stopServer)
 
   before(function (next) {
+    console.log('test')
     // Test on random user from database
     User.count()
     .then(function (count) {
@@ -59,12 +60,13 @@ describe('/api/roles', function () {
 
   it('GET filtered list', function (next) {
     var params = {
-      // name: 'member',
+      // name: 'admin',
+      // title: 'admin',
       sort: 'name',
       order: 'asc',
     }
     request({
-      uri: test.variables.apiendpoint + '/roles',
+      uri: test.variables.apiendpoint + '/permissions',
       method: 'GET',
       qs: params,
       headers: {Authorization: ' Bearer ' + loggedUser.token},
@@ -84,7 +86,7 @@ describe('/api/roles', function () {
 
   it('GET :id', function (next) {
     request({
-      uri: test.variables.apiendpoint + '/roles',
+      uri: test.variables.apiendpoint + '/permissions',
       method: 'GET',
       qs: {id: loggedUser.roles[0].id},
       headers: {Authorization: ' Bearer ' + loggedUser.token},
@@ -96,7 +98,7 @@ describe('/api/roles', function () {
         expect(body).to.be.an('array')
         expect(body).to.have.lengthOf(1)
         expect(body[0]).to.have.property('name')
-        expect(body[0].name).to.eq(loggedUser.roles[0].name)
+        expect(body[0]).to.have.property('title')
       } else {
         expect(res.statusCode).to.eq(403)
         expect(body).to.have.property('message')
@@ -107,11 +109,11 @@ describe('/api/roles', function () {
 
   it('POST', function (next) {
     var params = {
-      name: 'testRole',
-      permissions: []
+      name: 'testPermission',
+      title: 'test Permission'
     }
     request({
-      uri: test.variables.apiendpoint + '/roles',
+      uri: test.variables.apiendpoint + '/permissions',
       method: 'POST',
       body: params,
       headers: {Authorization: ' Bearer ' + loggedUser.token},
@@ -122,41 +124,37 @@ describe('/api/roles', function () {
         expect(res.statusCode).to.eq(200)
         expect(body).to.be.an('object')
         expect(body).to.have.property('name')
-        expect(body).to.have.property('permissions')
-        expect(body.permissions).to.be.an('array')
-        expect(body.permissions).to.have.lengthOf(0)
+        expect(body).to.have.property('title')
         expect(body.name).to.eq(params.name)
       } else {
         expect(res.statusCode).to.eq(403)
         expect(body).to.have.property('message')
       }
       // save this role for additional tests
-      testRole = res.body
+      testPermission = res.body
       next()
     })
   })
 
   it('PUT', function (next) {
     var params = {
-      name: 'testRole modified',
-      permissions: [
-        'admin'
-      ]
+      name: 'testPermission modified',
+      title: 'test Permission modified'
     }
-    // If loggedUser role is admin then testRole was saved and could be tested
-    // otherwise test on existing role from loggedUser
-    var roleId
+    // if loggedUser is admin then testPermission was saved and could be tested
+    // otherwise test on existing permission from loggedUser
+    var permissionId
     if (loggedUser.roles[0].name === 'admin') {
-      roleId = testRole._id.toString()
+      permissionId = testPermission._id.toString()
     } else {
-      roleId = loggedUser.roles[0]._id.toString()
+      permissionId = loggedUser.roles[0].permissions[0].toString()
     }
 
     request({
-      uri: test.variables.apiendpoint + '/roles',
+      uri: test.variables.apiendpoint + '/permissions',
       method: 'PUT',
       body: params,
-      qs: {id: roleId},
+      qs: {id: permissionId},
       headers: {Authorization: ' Bearer ' + loggedUser.token},
       json: true
     }, function (err, res, body) {
@@ -165,9 +163,7 @@ describe('/api/roles', function () {
         expect(res.statusCode).to.eq(200)
         expect(body).to.be.an('object')
         expect(body).to.have.property('name')
-        expect(body).to.have.property('permissions')
-        expect(body.permissions).to.be.an('array')
-        expect(body.permissions).to.have.lengthOf(1)
+        expect(body).to.have.property('title')
         expect(body.name).to.eq(params.name)
       } else {
         expect(res.statusCode).to.eq(403)
@@ -178,19 +174,19 @@ describe('/api/roles', function () {
   })
 
   it('DELETE', function (next) {
-    // if loggedUser role is admin then testRole was saved and could be tested
-    // otherwise test on existing role from loggedUser
-    var roleId
+    // if loggedUser is admin then testPermission was saved and could be tested
+    // otherwise test on existing permission from loggedUser
+    var permissionId
     if (loggedUser.roles[0].name === 'admin') {
-      roleId = testRole._id.toString()
+      permissionId = testPermission._id.toString()
     } else {
-      roleId = loggedUser.roles[0]._id.toString()
+      permissionId = loggedUser.roles[0].permissions[0].toString()
     }
 
     request({
-      uri: test.variables.apiendpoint + '/roles',
+      uri: test.variables.apiendpoint + '/permissions',
       method: 'DELETE',
-      qs: {id: roleId},
+      qs: {id: permissionId},
       headers: {Authorization: ' Bearer ' + loggedUser.token},
       json: true
     }, function (err, res, body) {

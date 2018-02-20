@@ -1,0 +1,38 @@
+[
+  {
+    "name": "admin",
+    "permissions": [
+      "admin"
+    ]
+  },
+  {
+    "name": "client",
+    "permissions": [
+      "user:own:read",
+      "user:create",
+      "user:own:update",
+      "user:own:delete",
+      "project:own:read",
+      "project:create",
+      "project:own:update",
+      "project:own:delete",
+      "rate:create",
+      "feedback:own:create"
+    ]
+  },
+  {
+    "name": "member",
+    "permissions": [
+      "user:read",
+      "user:create",
+      "user:update",
+      "user:delete",
+      "project:read",
+      "project:create",
+      "project:update",
+      "project:delete",
+      "rate:create",
+      "feedback:create"
+    ]
+  }
+]
