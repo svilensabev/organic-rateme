@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const FeedbackResponse = require('./feedback_response')
 var Schema = mongoose.Schema
 const dbUtils = require('../helpers/db-utils')
 
@@ -10,10 +11,24 @@ const schema = new Schema({
   createdAt: { type: Date, default: Date.now }
 })
 
+schema.pre('remove', function (next) {
+  var self = this
+  FeedbackResponse.find({'rateRequest': self._id}).remove().exec()
+  .then(function (feedback_responses) {
+    next()
+  })
+  .catch(function (err) {
+    next(err)
+  })
+})
+
 schema.statics.search = function search (params) {
   var query = this.model('RateRequest').find()
 
   // filters query by any provided parameter
+  if (params.id) {
+    query.find({'_id': params.id})
+  }
   if (params.project_id) {
     query.find({'project': params.project_id})
   }
@@ -21,10 +36,6 @@ schema.statics.search = function search (params) {
     query.find({'user': params.user_id})
   }
 
-  // filters query by any provided parameter
-  if (params.id) {
-    query.find({'_id': params.id})
-  }
   dbUtils.sqlDates(query, 'createdAt', params)
   dbUtils.sqlPaging(query, params)
   dbUtils.sqlSort(query, params)

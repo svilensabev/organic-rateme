@@ -21,6 +21,7 @@ schema.statics.search = function search (params) {
     query.find({'_id': params.id})
   }
   dbUtils.sqlLike(query, 'name', params.name)
+  dbUtils.sqlLike(query, 'title', params.title)
 
   // sets paging, sort and count parameters
   dbUtils.sqlPaging(query, params)

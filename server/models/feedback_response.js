@@ -4,9 +4,11 @@ const dbUtils = require('../helpers/db-utils')
 
 const schema = new Schema({
   rateRequest: {type: Schema.Types.ObjectId, ref: 'RateRequest'},
+  user: {type: Schema.Types.ObjectId, ref: 'User'},
   state: {type: String, required: true},
   feedback: {type: String},
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  respondedAt: { type: Date }
 })
 
 schema.statics.search = function search (params) {
@@ -19,17 +21,24 @@ schema.statics.search = function search (params) {
   if (params.rate_id) {
     query.find({'rateRequest': params.rate_id})
   }
-  query.find({'state': {'$in': params.state}})
+  if (params.user_id) {
+    query.find({'user': params.user_id})
+  }
+  if (params.state) {
+    query.find({'state': {'$in': params.state}})
+  }
   dbUtils.sqlLike(query, 'feedback', params.feedback)
 
   // sets date filters, paging, sort and count parameters
   dbUtils.sqlDates(query, 'createdAt', params)
+  dbUtils.sqlDates(query, 'respondedAt', params)
   dbUtils.sqlPaging(query, params)
   dbUtils.sqlSort(query, params)
   dbUtils.sqlCount(query, params)
 
   // executes query
   query.populate('rateRequest')
+  query.populate('user')
   return query.exec()
 }
 

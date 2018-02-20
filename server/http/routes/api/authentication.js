@@ -1,15 +1,15 @@
 const User = require('../../../models/user')
 const Role = require('../../../models/role')
 const _ = require('underscore')
-const jwtUtils = require('../../../helpers/jwt-utils')
+const jwtAccess = require('../../../helpers/jwt-access')
 
 module.exports = function (plasma, dna, helpers) {
   return {
     'POST': function (req, res, next) {
       var loggedUser
-      // find user by name and email and return JWT token
+
+      // find user by email and return JWT token
       User.findOne({
-        'name': req.body.name,
         'email': req.body.email
       }).exec()
 
@@ -43,7 +43,7 @@ module.exports = function (plasma, dna, helpers) {
           roles: loggedUser.rolesNames,
           permissions: loggedUser.permissions
         }
-        var token = jwtUtils.generateJwtToken(params, dna.jwt_secret)
+        var token = jwtAccess.generateJwtToken(params, dna.jwt_secret)
         res.body = token
         next()
       })
@@ -52,7 +52,7 @@ module.exports = function (plasma, dna, helpers) {
       .catch(function (err) {
         res.status(403)
         res.body = {message: err.message, error: err.name}
-        next()
+        next(err)
       })
     }
   }

@@ -14,6 +14,29 @@ const schema = new Schema({
   }]
 })
 
+/*
+TODO try to use hooks to replace permission name with permission _id
+and then save the object
+
+schema.set('validateBeforeSave', false)
+
+schema.pre('save', function (next) {
+  var self = this
+  console.log(self)
+  console.log('saving: %s (%s)', this.name, this.permissions)
+  if (this.permissions.length > 0) {
+    Permission.find({'name': {'$in': this.permissions}}).select('_id').exec()
+    .then(function (permissions) {
+      this.permissions = permissions
+      console.log('saving:::: %s (%s)', this.name, this.permissions)
+      return next()
+    })
+  }
+  console.log('saving:::::::: %s (%s)', this.name, this.permissions)
+  //next()
+})
+*/
+
 schema.statics.search = function search (params) {
   var query = this.model('Role').find()
 
