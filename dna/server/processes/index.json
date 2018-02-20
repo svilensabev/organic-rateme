@@ -45,7 +45,7 @@
       "from": "noreply@stem-skeleton"
     },
     "organic-site-routes": {
-      "source": "organic-express-routes",
+      "source": "./server/plasma/organic-express-routes-2",
       "reactOn": [
         "ExpressServer",
         "ApiRoutesReady"
