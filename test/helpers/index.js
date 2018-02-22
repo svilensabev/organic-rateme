@@ -23,7 +23,7 @@ var variables = test.variables = {
 require('./clean-uploads')
 require('./uploads')
 require('./clean-db')
-var asyncSeedDB = require('../../server/helpers/seed.js')
+var asyncSeedDB = require('./seed.js')
 
 test.initTestEnv = function (done) {
   var loadDna = require('organic-dna-loader')

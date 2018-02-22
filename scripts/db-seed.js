@@ -1,5 +1,5 @@
 var mongoose = require('mongoose')
-var asyncSeedDB = require('../server/helpers/seed.js')
+var asyncSeedDB = require('../test/helpers/seed.js')
 
 module.exports = function (angel) {
   angel.on('db-seed', function () {

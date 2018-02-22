@@ -1,8 +1,8 @@
-const createPermissions = require('../../test/helpers/suites/create-permissions')
-const createRoles = require('../../test/helpers/suites/create-roles')
-const createUsers = require('../../test/helpers/suites/create-users')
-const createProjects = require('../../test/helpers/suites/create-projects')
-const createRateRequests = require('../../test/helpers/suites/create-rate-requests')
+const createPermissions = require('./suites/create-permissions')
+const createRoles = require('./suites/create-roles')
+const createUsers = require('./suites/create-users')
+const createProjects = require('./suites/create-projects')
+const createRateRequests = require('./suites/create-rate-requests')
 
 var asyncSeedDB = async function () {
   var res = []
